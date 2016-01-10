@@ -1,0 +1,16 @@
+﻿  AccountBalancer.cpp
+h:\data\documents\visual studio 2015\projects\accountbalancer\accountbalancer\accountbalancer.cpp(18): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+h:\data\documents\visual studio 2015\projects\accountbalancer\accountbalancer\accountbalancer.cpp(19): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+h:\data\documents\visual studio 2015\projects\accountbalancer\accountbalancer\accountbalancer.cpp(52): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+h:\data\documents\visual studio 2015\projects\accountbalancer\accountbalancer\accountbalancer.cpp(181): warning C4018: '<': signed/unsigned mismatch
+h:\data\documents\visual studio 2015\projects\accountbalancer\accountbalancer\accountbalancer.cpp(210): warning C4018: '<': signed/unsigned mismatch
+h:\data\documents\visual studio 2015\projects\accountbalancer\accountbalancer\accountbalancer.cpp(246): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+h:\data\documents\visual studio 2015\projects\accountbalancer\accountbalancer\accountbalancer.cpp(147): warning C4101: 'firstChar': unreferenced local variable
+h:\data\documents\visual studio 2015\projects\accountbalancer\accountbalancer\accountbalancer.cpp(364): warning C4018: '<': signed/unsigned mismatch
+h:\data\documents\visual studio 2015\projects\accountbalancer\accountbalancer\accountbalancer.cpp(272): warning C4018: '<': signed/unsigned mismatch
+  h:\data\documents\visual studio 2015\projects\accountbalancer\accountbalancer\accountbalancer.cpp(399): note: see reference to function template instantiation 'float VectorAdd<float>(std::vector<float,std::allocator<_Ty>>)' being compiled
+          with
+          [
+              _Ty=float
+          ]
+  AccountBalancer.vcxproj -> h:\data\documents\visual studio 2015\Projects\AccountBalancer\Debug\AccountBalancer.exe

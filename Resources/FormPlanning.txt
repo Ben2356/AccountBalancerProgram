@@ -1,0 +1,71 @@
+Checks, AIM, Check Card, Electronic Withdrawals:
+
+Date/Check #/Identifier:		Amount: $
+
+
+
+
+==============================
+
+VALID DATA INPUT:
+-----------------
+
+Checks, AIM, Check Card, Electronic Withdrawals:
+
+Date/Check #/Identifier: Check1		Amount: $201.3
+Date/Check #/Identifier: 
+
+-----------------------
+
+Checks, AIM, Check Card, Electronic Withdrawals:
+
+Date/Check #/Identifier: Check1		Amount: $102.0
+Date/Check #/Identifier: NA
+
+ ||
+ ||
+ \/
+
+Checks, AIM, Check Card, Electronic Withdrawals:
+
+Date/Check #/Identifier: Check1		Amount: $102.0
+
+
+==============================
+
+ERROR ON DATA INPUT:
+--------------------
+
+Checks, AIM, Check Card, Electronic Withdrawals:
+
+Date/Check #/Identifier: Check1		Amount: $afea
+
+ERROR INVALID INPUT! PLEASE TRY AGAIN!
+
+||
+||
+\/
+
+Checks, AIM, Check Card, Electronic Withdrawals:
+
+Date/Check #/Identifier: Check1		Amount: $402.9
+Date/Check #/Identifier: 
+
+------------------
+
+Checks, AIM, Check Card, Electronic Withdrawals:
+
+Date/Check #/Identifier: Check1		Amount: $392.8
+Date/Check #/Identifier: Check2		Amount: $rgsh
+
+ERROR INVALID INPUT! PLEASE TRY AGAIN!
+
+||
+||
+\/
+
+Checks, AIM, Check Card, Electronic Withdrawals:
+
+Date/Check #/Identifier: Check1		Amount: $392.8
+Date/Check #/Identifier: Check2		Amount: $122.3
+Date/Check #/Identifier: 
