@@ -1,6 +1,7 @@
 //AUTHOR: BENJAMIN MORENO 
-//LAST UPDATED: 1/8/16
+//LAST UPDATED: 1/10/16
 
+#include "Stack.h"	//contains the stack data structure
 #include <iostream>
 #include <string>
 #include <cctype>
@@ -375,18 +376,39 @@ float VectorAdd(vector<FormEntry> vData)
 *	+ ADD ABILITY TO GO BACK TO A PREVIOUS STEP TO CHANGE A VALUE (implement using a stack that contains function pointers?)
 */
 
-int main()
-{
-	//max value of X enterable || the entire line's length
-	const int consoleWindowX = 79;
+//ISSUE: when going backwards from a step, the standing text creates problems
 
-	HANDLE cConsoleScreen;
-	cConsoleScreen = GetStdHandle(STD_OUTPUT_HANDLE);
+//Each piece of the program will need to be bundled in a function, each with the same function signature
+//using global variables to keep the passing of the needed variables into the function each step and keep the return and arguments matching to the stack's array type
+//issue with using ellipsis is that global variables will still need to be present for vars that are defined within each step function as their return type must be void
+//possible global vars:
+
+//max value of X enterable || the entire line's length
+const int consoleWindowX = 79;
+
+HANDLE hConsole;
+float initBalance;
+float otherDeductionsTotal;
+float otherCreditsTotal;
+float accountRegisterBalance;
+float statmentEndingBalance;
+float otherDepositsTotal;
+float subtotal;
+float formDataSum;
+
+
+//uses initBalance
+void Step1()
+{
 	cout << "FIRST, start with your Account Register/Checkbook:" << "\n\n";
 	cout << "1) List your Account Register/Checkbook Balance here: $";
-	float initBalance = GetInput(55,2,cConsoleScreen);
-	ClearScreen(cConsoleScreen);
+	initBalance = GetInput(55, 2, hConsole);
+	ClearScreen(hConsole);
+}
 
+//uses initBalance,otherDeductionsTotal
+void Step2()
+{
 	//standing text throughout program
 	cout << "1) Account Register/Checkbook Balance:";
 
@@ -395,71 +417,100 @@ int main()
 	cout << '\n';
 
 	cout << "2) Enter any other other service charges or other deductions not previously \n   recorded that are listed on this statement \n   (AS A COMMA SEPARATED LIST WITH NO SPACES): $";
-	vector<float> otherDeductions = GetInputArray(4,cConsoleScreen);
-	ClearScreen(cConsoleScreen,consoleWindowX,0);
-	float otherDeductionsTotal = VectorAdd(otherDeductions);
+	vector<float> otherDeductions = GetInputArray(4, hConsole);
+	ClearScreen(hConsole, consoleWindowX, 0);
+	otherDeductionsTotal = VectorAdd(otherDeductions);
+}
 
+//uses otherDeductionsTotal,otherCreditsTotal
+void Step3()
+{
 	//standing text
-	cout << "2) Other service charges or deductions:"; 
+	cout << "2) Other service charges or deductions:";
 	cout << setw(34) << right << "$" << otherDeductionsTotal << endl;
 	cout << '\n';
 
 	cout << "3) List credits not previoulsy recorded that are listed on this statement \n   such as interest \n   (AS A COMMA SEPARATED LIST WITH NO SPACES): $";
-	vector<float> otherCredits = GetInputArray(5,cConsoleScreen);
-	ClearScreen(cConsoleScreen,consoleWindowX, 1);
-	float otherCreditsTotal = VectorAdd(otherCredits);
+	vector<float> otherCredits = GetInputArray(5, hConsole);
+	ClearScreen(hConsole, consoleWindowX, 1);
+	otherCreditsTotal = VectorAdd(otherCredits);
+}
 
+//uses otherCreditsTotal,accountRegisterBalance,initBalance,otherDeductionsTotal
+void Step4()
+{
 	//standing text
 	cout << "3) Other credits:";
 	cout << setw(56) << right << "$" << otherCreditsTotal << endl;
 	cout << '\n';
 
-	float accountRegisterBalance = (initBalance - otherDeductionsTotal) + otherCreditsTotal;
-	SetTextColor(cConsoleScreen, WHITE);
+	accountRegisterBalance = (initBalance - otherDeductionsTotal) + otherCreditsTotal;
+	SetTextColor(hConsole, WHITE);
 	cout << "This is your NEW ACCOUNT REGISTER BALANCE:";
 	cout << setw(31) << right << "$" << accountRegisterBalance;
-	SetTextColor(cConsoleScreen);
+	SetTextColor(hConsole);
 	WaitForUser();
-	ClearScreen(cConsoleScreen);
+	ClearScreen(hConsole);
+}
+
+//uses statmentEndingBalance
+void Step5()
+{
 	cout << "NOW, with your Account Statement:" << "\n\n";
 	cout << "4) List your Statement Ending Balance here: $";
-	float statmentEndingBalance = GetInput(45,2,cConsoleScreen);
-	ClearScreen(cConsoleScreen);
+	statmentEndingBalance = GetInput(45, 2, hConsole);
+	ClearScreen(hConsole);
+}
 
+//uses statmentEndingBalance,otherDepositsTotal
+void Step6()
+{
 	//standing text
 	cout << "4) Statement Ending Balance:";
 	cout << setw(45) << right << "$" << statmentEndingBalance << endl;
 	cout << '\n';
 
 	cout << "5) Add any deposits not shown on this statement \n   (AS A COMMA SEPARATED LIST WITH NO SPACES): $";
-	vector<float> otherDeposits = GetInputArray(3,cConsoleScreen);
-	ClearScreen(cConsoleScreen,consoleWindowX, 0);
-	float otherDepositsTotal = VectorAdd(otherDeposits);
+	vector<float> otherDeposits = GetInputArray(3, hConsole);
+	ClearScreen(hConsole, consoleWindowX, 0);
+	otherDepositsTotal = VectorAdd(otherDeposits);
+}
 
+//uses otherDepositsTotal,subtotal,statmentEndingBalance,
+void Step7()
+{
 	//standing text
 	cout << "5) Other deposits:";
 	cout << setw(55) << right << "$" << otherDepositsTotal << endl;
 	cout << '\n';
 
-	float subtotal = statmentEndingBalance + otherDepositsTotal;
-	SetTextColor(cConsoleScreen, WHITE);
+	subtotal = statmentEndingBalance + otherDepositsTotal;
+	SetTextColor(hConsole, WHITE);
 	cout << "SUBTOTAL...................:";
 	cout << setw(45) << right << "$" << subtotal;
-	SetTextColor(cConsoleScreen);
+	SetTextColor(hConsole);
 	WaitForUser();
-	ClearScreen(cConsoleScreen);
+	ClearScreen(hConsole);
+}
 
+//uses formDataSum
+void Step8()
+{
 	//Each withdrawl will be entered one by one where the previous will appear listed with the Data/Check # and Amount title, to indicate that there are no more values the user enters NA or na
 	//user enters Date/Check # first then the program will prompt for a Amount, values entered are listed immediately
 	cout << "6) List all outstanding checks, ATM, Check Card, other electronic withdrawls:" << "\n\n\n";
-	vector<FormEntry> formData = GetFormEntry(cConsoleScreen);
-	float formDataSum = VectorAdd(formData);
-	SetTextColor(cConsoleScreen, WHITE);
+	vector<FormEntry> formData = GetFormEntry(hConsole);
+	formDataSum = VectorAdd(formData);
+	SetTextColor(hConsole, WHITE);
 	cout << setw(69) << right << "TOTAL AMOUNT: $" << formDataSum << endl;
-	SetTextColor(cConsoleScreen);
+	SetTextColor(hConsole);
 	WaitForUser();
-	ClearScreen(cConsoleScreen);
+	ClearScreen(hConsole);
+}
 
+//uses initBalance,otherDeductionsTotal,otherCreditsTotal,accountRegisterBalance,statmentEndingBalance,otherDepositsTotal,subtotal,formDataSum
+void Step9()
+{
 	//create overview screen where the standing text throughout the program are displayed for review
 	cout << "1) Account Register/Checkbook Balance:";
 	cout << setw(35) << right << "$" << initBalance << endl;
@@ -468,10 +519,10 @@ int main()
 	cout << "3) Other credits:";
 	cout << setw(56) << right << "$" << otherCreditsTotal << endl;
 	cout << '\n';
-	SetTextColor(cConsoleScreen, WHITE);
+	SetTextColor(hConsole, WHITE);
 	cout << "NEW ACCOUNT REGISTER BALANCE:";
 	cout << setw(44) << right << "$" << accountRegisterBalance << endl;
-	SetTextColor(cConsoleScreen);
+	SetTextColor(hConsole);
 	cout << "---------------------------------------------------" << endl;
 	cout << "\n";
 	cout << "4) Statement Ending Balance:";
@@ -479,10 +530,10 @@ int main()
 	cout << "5) Other deposits:";
 	cout << setw(55) << right << "$" << otherDepositsTotal << endl;
 	cout << '\n';
-	SetTextColor(cConsoleScreen, WHITE);
+	SetTextColor(hConsole, WHITE);
 	cout << "SUBTOTAL...................:";
 	cout << setw(45) << right << "$" << subtotal;
-	SetTextColor(cConsoleScreen);
+	SetTextColor(hConsole);
 	cout << '\n';
 	cout << "---------------------------------------------------" << endl;
 	cout << '\n';
@@ -490,21 +541,58 @@ int main()
 	cout << "\n\n";
 
 	float finalTotal = subtotal - formDataSum;
-	SetTextColor(cConsoleScreen, WHITE);
+	SetTextColor(hConsole, WHITE);
 	cout << "7) After your TOTAL outstanding checks, ATM, Check Card, and other \n electronic withdrawls were subtracted from SUBTOTAL, your balance is: \t$" << finalTotal;
-	SetTextColor(cConsoleScreen);
+	SetTextColor(hConsole);
 	cout << "\n\n\n";
 
 	if (finalTotal == accountRegisterBalance)
 	{
-		SetTextColor(cConsoleScreen, GREEN);
+		SetTextColor(hConsole, GREEN);
 		cout << "\tCONGRATULATIONS!! YOUR BANK ACCOUNT IS BALANCED CORRECTLY!!" << endl;
+		SetTextColor(hConsole);
 	}
 	else
 	{
-		SetTextColor(cConsoleScreen, RED);
+		SetTextColor(hConsole, RED);
 		cout << "\t\t\tUH-OH!! SOMETHING ISN'T RIGHT!!" << endl;
 		cout << "     Your value from STEP 7 should match your new Account Register Balance!";
+		SetTextColor(hConsole);
+	}
+}
+
+int main()
+{
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	
+	//initialize the stack with inital length of 9 as program will go through until completion at least once, minimizing the calls to the resize operation
+	FunctionPointerStack cProgram(9);
+
+	//simple exception handling for operations that will crash program
+	try
+	{
+		cProgram.Push(Step1);
+		cProgram.Peek();
+		cProgram.Push(Step2);
+		cProgram.Peek();
+		cProgram.Push(Step3);
+		cProgram.Peek();
+		cProgram.Push(Step4);
+		cProgram.Peek();
+		cProgram.Push(Step5);
+		cProgram.Peek();
+		cProgram.Push(Step6);
+		cProgram.Peek();
+		cProgram.Push(Step7);
+		cProgram.Peek();
+		cProgram.Push(Step8);
+		cProgram.Peek();
+		cProgram.Push(Step9);
+		cProgram.Peek();
+	}
+	catch (char* e)
+	{
+		cerr << "EXCEPTION CAUGHT: " << e << endl;
 	}
 
 	cin.clear();
