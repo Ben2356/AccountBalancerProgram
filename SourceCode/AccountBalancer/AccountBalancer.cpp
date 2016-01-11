@@ -1,5 +1,9 @@
 //AUTHOR: BENJAMIN MORENO 
-//LAST UPDATED: 1/10/16
+//LAST UPDATED: 1/11/16
+
+/*TODO:
+* 
+*/
 
 #include "Stack.h"	//contains the stack data structure
 #include <iostream>
@@ -10,6 +14,10 @@
 #include <Windows.h>
 
 using namespace std;
+
+//need to find way around global var
+//initialize the stack with inital length of 9 as program will go through until completion at least once, minimizing the calls to the resize operation
+FunctionPointerStack cProgram(9);
 
 //Clearing the console screen using WIN32 API
 //Have the set cursor position area calling the SetCursorPosition function? (add a new bool parameter whether to start on same line or not)
@@ -84,16 +92,54 @@ inline void SetTextColor(HANDLE hConsole, WORD wAttribute = DEFAULT)
 		return;
 }
 
-//GetInput() V2, all the old abilities with the added functionality of clearing the invalid input off the input line and allowing the user to re-enter data in that same spot
+//handles going back to a previous step in the program
+//having a gloabl stack makes the parameter here useless if it will stay global
+void GoBack(FunctionPointerStack &cStack)
+{
+	cStack.Pop();
+	cStack.Peek();
+}
+
+//added functionality of clearing the invalid input off the input line and allowing the user to re-enter data in that same spot and ability to recognize command codes
 float GetInput(int startX, int line, HANDLE hConsole)
 {
 	bool isBlank = false;
+	bool isInvalid = false;
 	float input;
 	char firstChar = cin.get();
 
 	//if the first char of the unformatted input is a newline then the enter key was just pressed and input is blank
 	if (firstChar == '\n')
 		isBlank = true;
+
+	//check to see if there is a special command being entered, special commands begin with a '/' (47)
+	else if (firstChar == 47)
+	{
+		char commandChar = cin.get();
+		
+		//using switch statement to make it easier to extend command library later
+		switch (commandChar)
+		{
+			case 'b':
+				//make sure that this step is not the first
+				if (cProgram.GetUsedLength() == 1)
+				{
+					isInvalid = true;
+					break;
+				}
+
+				else
+				{
+					GoBack(cProgram);
+
+					//return a negative number as an rePush code that restarts this caller's function
+					return -1;
+				}
+			default:
+				isInvalid = true;
+				break;
+		}
+	}
 
 	//else the input is potentially valid, put the extracted first char back and perform extraction on operation
 	else
@@ -106,14 +152,18 @@ float GetInput(int startX, int line, HANDLE hConsole)
 	//if numbers were entered then stream is fine and failbit = false
 	//if numbers followed by chars entered then failbit = false and only the numbers are extracted leaving behind the characters which are then extracted and ignored and thus gcount == other characters left in stream after extraction
 	//if chars entered then failbit = true and nothing could be extracted from the input stream
-	while (cin.fail() || cin.gcount() > 1 || isBlank || input < 0)
+	while (cin.fail() || cin.gcount() > 1 || isBlank || isInvalid || input < 0)
 	{
+		
 		//wipe the old output if there is anything there to wipe
-		if(!isBlank)
+		if (!isBlank || !isInvalid)
 			ClearScreen(hConsole, startX, line);
 
 		//reset the isBlank flag
 		isBlank = false;
+
+		//reset the isInvalid flag
+		isInvalid = false;
 
 		SetTextColor(hConsole, RED);
 		cerr << "ERROR INVALID INPUT! PLEASE TRY AGAIN!" << endl;
@@ -148,7 +198,7 @@ vector<float> InputArray(vector<float> vInput, string strInput, int line, HANDLE
 	bool errorFlag = false;
 	bool singleValue = false;
 	bool isEmpty = false;
-	char firstChar;
+	bool isInvalid = false;
 	do
 	{
 		int numOfDecimals = 0;
@@ -167,8 +217,36 @@ vector<float> InputArray(vector<float> vInput, string strInput, int line, HANDLE
 			//reset the isEmpty flag after throwing the error
 			isEmpty = false;
 
+			//reset isInvalid flag
+			isInvalid = false;
+
 			//use getline in order to deal with extraneous newline chars in the input stream
 			getline(cin, strInput);
+
+			//check to see if input was special command, starts with '/' (47)
+			if (strInput[0] == 47)
+			{
+				//make sure a command char follows, if not will use isEmpty flag as the error flag is reset after this block
+				if (strInput.length() != 2)
+					isInvalid = true;
+
+				else
+				{
+					//using switch statement to make it easier to extend command library later
+					switch (strInput[1])
+					{
+						case 'b':
+							GoBack(cProgram);
+
+							//returns an empty vector as rePush code
+							return vInput;
+
+						default:
+							isInvalid = true;
+							break;
+					}
+				}
+			}
 			
 			if (strInput.length() == 0)
 				isEmpty = true;
@@ -178,7 +256,7 @@ vector<float> InputArray(vector<float> vInput, string strInput, int line, HANDLE
 		errorFlag = false;
 
 		//make sure the comma is not the first char of the input and the first char is not a space
-		if (!isEmpty && strInput.find(',') != -1 && strInput.find(',') != 0)
+		if (!isEmpty && !isInvalid && strInput.find(',') != -1 && strInput.find(',') != 0)
 		{
 			//handles the values on the left of the comma
 			//check to see whether the input are digits only if not then get new input
@@ -209,7 +287,7 @@ vector<float> InputArray(vector<float> vInput, string strInput, int line, HANDLE
 		//if no comma found assume only one value, must check that value then insert it into array then set the singleValue flag to true
 		else
 		{
-			if (!isEmpty)
+			if (!isEmpty && !isInvalid)
 			{
 				for (int i = 0; i < strInput.length(); i++)
 				{
@@ -236,14 +314,14 @@ vector<float> InputArray(vector<float> vInput, string strInput, int line, HANDLE
 				singleValue = true;
 			}
 		}
-		if (errorFlag || isEmpty)
+		if (errorFlag || isEmpty || isInvalid)
 		{
 			SetTextColor(hConsole, RED);
 			cerr << "ERROR INVALID INPUT! PLEASE TRY AGAIN!" << endl;
 			SetTextColor(hConsole);
 		}
 
-	} while (errorFlag || isEmpty);
+	} while (errorFlag || isEmpty || isInvalid);
 
 	//if it is good then put the float value into the vector
 	string currentVal = strInput.substr(0, endValue);
@@ -272,6 +350,10 @@ vector<float> GetInputArray(int line, HANDLE hConsole)
 template <typename T>
 float VectorAdd(vector<T> vData)
 {
+	//way of finding a rePush
+	if (vData.empty())
+		return -1;
+
 	float nSum = 0.0;
 	for (int i = 0; i < vData.size(); i++)
 	{
@@ -281,12 +363,36 @@ float VectorAdd(vector<T> vData)
 }
 
 //simple function to wait for user to press enter before proceeding, inline function to reduce overhead
-inline void WaitForUser()
+inline void WaitForUser(HANDLE hConsole, int commandStartLine = 10)
 {
-	cout << "\n\n\n" << "\t\t" << "If you wish to record this value please do so now." << "\n\n" << "\t\t" << "   Once you are ready, press enter to continue.";
+	cout << "\n\n\n\n" << "\t\t" << "Once you are ready, press enter twice to continue." << "\n\n" << "**Remember that you can go back to a previous step at any time by entering \"/b\"!";
 
-	//ignore any extra input to prevent data from being extracted from input stream next operation until a space is detected
-	cin.ignore(512, '\n');
+	SetCursorPosition(hConsole, 0, commandStartLine);
+	cout << "\n\n" << "\t\t\t\t Commands: ";
+
+	//open input to allow for commands
+	char firstChar = cin.get();
+
+	if (firstChar == 47)
+	{
+		char commandChar = cin.get();
+		switch (commandChar)
+		{
+			case 'b':
+				//ignores the newline char left in input stream after back command
+				cin.ignore();
+
+				GoBack(cProgram);
+				break;
+			default:
+				break;
+		}
+	}
+	else
+	{
+		//ignore any extra input to prevent data from being extracted from input stream next operation until a space is detected
+		cin.ignore(255, '\n');
+	}
 }
 
 //forms can be represented as 
@@ -296,7 +402,6 @@ inline void WaitForUser()
 *
 *
 */
-
 /*	process will:
 *	1)prompt user for Date/Check # (identifier)(no input validation)
 *	2)check to see if user entered NA, if true then break loop and wipe out text on screen
@@ -319,7 +424,7 @@ struct FormEntry
 //returns a vector containing FormEntry objects
 vector<FormEntry> GetFormEntry(HANDLE hConsole)
 {
-	const int cursorStartLocationY = 3;
+	const int cursorStartLocationY = 6;
 	const int amountFieldXStart = 69;
 	int currentEntryY;
 	int entryCount = 0;
@@ -343,6 +448,28 @@ vector<FormEntry> GetFormEntry(HANDLE hConsole)
 			return vForm;
 		}
 
+		//check to see if command, commands are also check in the amount field by the GetInput() function
+		if (id[0] == '/')
+		{
+			//if there is no command char then its just an identifier
+			if (id.length() == 2)
+			{
+				//check to see which command
+				switch (id[1])
+				{
+				case 'b':
+					GoBack(cProgram);
+
+					//assigning the first entry's amount to -1 as rePush code
+					vForm.push_back(FormEntry("REPUSH", -1));
+
+					return vForm;
+				default:
+					break;
+				}
+			}
+		}
+
 		//move cursor back to the current line
 		SetCursorPosition(hConsole, 60, currentEntryY);
 
@@ -364,6 +491,10 @@ vector<FormEntry> GetFormEntry(HANDLE hConsole)
 //vector addition that deals with FormEntry objects
 float VectorAdd(vector<FormEntry> vData)
 {
+	//check to see if rePush code
+	if (!vData.empty() && vData[0].amount == -1)
+		return -1;
+
 	float nSum = 0.0;
 	for (int i = 0; i < vData.size(); i++)
 	{
@@ -372,11 +503,7 @@ float VectorAdd(vector<FormEntry> vData)
 	return nSum;
 }
 
-/*TODO:
-*	+ ADD ABILITY TO GO BACK TO A PREVIOUS STEP TO CHANGE A VALUE (implement using a stack that contains function pointers?)
-*/
-
-//ISSUE: when going backwards from a step, the standing text creates problems
+//when user types /b the program will go back to the previous step
 
 //Each piece of the program will need to be bundled in a function, each with the same function signature
 //using global variables to keep the passing of the needed variables into the function each step and keep the return and arguments matching to the stack's array type
@@ -396,121 +523,10 @@ float otherDepositsTotal;
 float subtotal;
 float formDataSum;
 
-
-//uses initBalance
-void Step1()
-{
-	cout << "FIRST, start with your Account Register/Checkbook:" << "\n\n";
-	cout << "1) List your Account Register/Checkbook Balance here: $";
-	initBalance = GetInput(55, 2, hConsole);
-	ClearScreen(hConsole);
-}
-
-//uses initBalance,otherDeductionsTotal
-void Step2()
-{
-	//standing text throughout program
-	cout << "1) Account Register/Checkbook Balance:";
-
-	//35 is ideal setting on line width, size of text before must be taken into account though to properly space values
-	cout << setw(35) << right << "$" << initBalance << endl;
-	cout << '\n';
-
-	cout << "2) Enter any other other service charges or other deductions not previously \n   recorded that are listed on this statement \n   (AS A COMMA SEPARATED LIST WITH NO SPACES): $";
-	vector<float> otherDeductions = GetInputArray(4, hConsole);
-	ClearScreen(hConsole, consoleWindowX, 0);
-	otherDeductionsTotal = VectorAdd(otherDeductions);
-}
-
-//uses otherDeductionsTotal,otherCreditsTotal
-void Step3()
-{
-	//standing text
-	cout << "2) Other service charges or deductions:";
-	cout << setw(34) << right << "$" << otherDeductionsTotal << endl;
-	cout << '\n';
-
-	cout << "3) List credits not previoulsy recorded that are listed on this statement \n   such as interest \n   (AS A COMMA SEPARATED LIST WITH NO SPACES): $";
-	vector<float> otherCredits = GetInputArray(5, hConsole);
-	ClearScreen(hConsole, consoleWindowX, 1);
-	otherCreditsTotal = VectorAdd(otherCredits);
-}
-
-//uses otherCreditsTotal,accountRegisterBalance,initBalance,otherDeductionsTotal
-void Step4()
-{
-	//standing text
-	cout << "3) Other credits:";
-	cout << setw(56) << right << "$" << otherCreditsTotal << endl;
-	cout << '\n';
-
-	accountRegisterBalance = (initBalance - otherDeductionsTotal) + otherCreditsTotal;
-	SetTextColor(hConsole, WHITE);
-	cout << "This is your NEW ACCOUNT REGISTER BALANCE:";
-	cout << setw(31) << right << "$" << accountRegisterBalance;
-	SetTextColor(hConsole);
-	WaitForUser();
-	ClearScreen(hConsole);
-}
-
-//uses statmentEndingBalance
-void Step5()
-{
-	cout << "NOW, with your Account Statement:" << "\n\n";
-	cout << "4) List your Statement Ending Balance here: $";
-	statmentEndingBalance = GetInput(45, 2, hConsole);
-	ClearScreen(hConsole);
-}
-
-//uses statmentEndingBalance,otherDepositsTotal
-void Step6()
-{
-	//standing text
-	cout << "4) Statement Ending Balance:";
-	cout << setw(45) << right << "$" << statmentEndingBalance << endl;
-	cout << '\n';
-
-	cout << "5) Add any deposits not shown on this statement \n   (AS A COMMA SEPARATED LIST WITH NO SPACES): $";
-	vector<float> otherDeposits = GetInputArray(3, hConsole);
-	ClearScreen(hConsole, consoleWindowX, 0);
-	otherDepositsTotal = VectorAdd(otherDeposits);
-}
-
-//uses otherDepositsTotal,subtotal,statmentEndingBalance,
-void Step7()
-{
-	//standing text
-	cout << "5) Other deposits:";
-	cout << setw(55) << right << "$" << otherDepositsTotal << endl;
-	cout << '\n';
-
-	subtotal = statmentEndingBalance + otherDepositsTotal;
-	SetTextColor(hConsole, WHITE);
-	cout << "SUBTOTAL...................:";
-	cout << setw(45) << right << "$" << subtotal;
-	SetTextColor(hConsole);
-	WaitForUser();
-	ClearScreen(hConsole);
-}
-
-//uses formDataSum
-void Step8()
-{
-	//Each withdrawl will be entered one by one where the previous will appear listed with the Data/Check # and Amount title, to indicate that there are no more values the user enters NA or na
-	//user enters Date/Check # first then the program will prompt for a Amount, values entered are listed immediately
-	cout << "6) List all outstanding checks, ATM, Check Card, other electronic withdrawls:" << "\n\n\n";
-	vector<FormEntry> formData = GetFormEntry(hConsole);
-	formDataSum = VectorAdd(formData);
-	SetTextColor(hConsole, WHITE);
-	cout << setw(69) << right << "TOTAL AMOUNT: $" << formDataSum << endl;
-	SetTextColor(hConsole);
-	WaitForUser();
-	ClearScreen(hConsole);
-}
-
-//uses initBalance,otherDeductionsTotal,otherCreditsTotal,accountRegisterBalance,statmentEndingBalance,otherDepositsTotal,subtotal,formDataSum
 void Step9()
 {
+	ClearScreen(hConsole);
+
 	//create overview screen where the standing text throughout the program are displayed for review
 	cout << "1) Account Register/Checkbook Balance:";
 	cout << setw(35) << right << "$" << initBalance << endl;
@@ -559,46 +575,202 @@ void Step9()
 		cout << "     Your value from STEP 7 should match your new Account Register Balance!";
 		SetTextColor(hConsole);
 	}
+
+	//DEBUG
+	//cout << "STACK SIZE: " << cProgram.GetUsedLength() << endl;
+
+	bool errorFlag = false;
+	string commands;
+	cout << "\n" << "Type \"exit\" to quit the program" << "\n\n" << "Commands: ";
+	do 
+	{
+		if (errorFlag)
+		{
+			ClearScreen(hConsole, 10, 24);
+			SetCursorPosition(hConsole, 10, 24);
+		}
+		errorFlag = false;
+		cin >> commands;
+
+		//if command is valid then do operation else wipe the input field for another try
+		if (commands.length() == 2 && commands[0] == '/')
+		{
+			switch (commands[1])
+			{
+			case 'b':
+				cin.ignore();
+				GoBack(cProgram);
+				break;
+			default:
+				errorFlag = true;
+				break;
+			}
+		}
+
+		//use exit to quit program 
+		else if (!commands.compare("exit") || !commands.compare("Exit"))
+		{
+			break;
+		}
+
+		else
+			errorFlag = true;
+	} while (errorFlag);
+}
+
+//ISSUE when going back and then inserting an invalid amount breaks input validation loop -- seemingly random
+void Step8()
+{
+	ClearScreen(hConsole);
+
+	//Each withdrawl will be entered one by one where the previous will appear listed with the Data/Check # and Amount title, to indicate that there are no more values the user enters NA or na
+	//user enters Date/Check # first then the program will prompt for a Amount, values entered are listed immediately
+	cout << "6) List all outstanding checks, ATM, Check Card, other electronic withdrawls:" << "\n\n" << "*Once you have finished entering all your data, type \"NA\" or \"na\" into the \n Data/Check #/Identifier field to finish this step" << "\n\n\n";
+	vector<FormEntry> formData = GetFormEntry(hConsole);
+	formDataSum = VectorAdd(formData);
+	SetTextColor(hConsole, WHITE);
+	cout << setw(69) << right << "TOTAL AMOUNT: $" << formDataSum << endl;
+	SetTextColor(hConsole);
+	WaitForUser(hConsole,formData.size()+14);
+	cProgram.Push(Step9);
+	cProgram.Peek();
+}
+
+void Step7()
+{
+	ClearScreen(hConsole);
+	cout << "4) Statement Ending Balance:";
+	cout << setw(45) << right << "$" << statmentEndingBalance << endl;
+	cout << "5) Other deposits:";
+	cout << setw(55) << right << "$" << otherDepositsTotal << endl;
+	cout << '\n';
+
+	subtotal = statmentEndingBalance + otherDepositsTotal;
+	SetTextColor(hConsole, WHITE);
+	cout << "SUBTOTAL...................:";
+	cout << setw(45) << right << "$" << subtotal;
+	SetTextColor(hConsole);
+	WaitForUser(hConsole,9);
+	cProgram.Push(Step8);
+	cProgram.Peek();
+}
+
+void Step6()
+{
+	ClearScreen(hConsole);
+	cout << "4) Statement Ending Balance:";
+	cout << setw(45) << right << "$" << statmentEndingBalance << endl;
+	cout << '\n';
+
+	cout << "5) Add any deposits not shown on this statement \n   (AS A COMMA SEPARATED LIST WITH NO SPACES): $";
+	vector<float> otherDeposits = GetInputArray(3, hConsole);
+	ClearScreen(hConsole, consoleWindowX, 0);
+	otherDepositsTotal = VectorAdd(otherDeposits);
+	cProgram.Push(Step7);
+	cProgram.Peek();
+}
+
+void Step5()
+{
+	
+	ClearScreen(hConsole);
+	cout << "NOW, with your Account Statement:" << "\n\n";
+	cout << "4) List your Statement Ending Balance here: $";
+	statmentEndingBalance = GetInput(45, 2, hConsole);
+	cProgram.Push(Step6);
+	cProgram.Peek();
+}
+
+void Step4()
+{
+	ClearScreen(hConsole);
+	cout << "1) Account Register/Checkbook Balance:";
+	cout << setw(35) << right << "$" << initBalance << endl;
+	cout << "2) Other service charges or deductions:";
+	cout << setw(34) << right << "$" << otherDeductionsTotal << endl;
+	cout << "3) Other credits:";
+	cout << setw(56) << right << "$" << otherCreditsTotal << endl;
+	cout << '\n';
+
+	accountRegisterBalance = (initBalance - otherDeductionsTotal) + otherCreditsTotal;
+	SetTextColor(hConsole, WHITE);
+	cout << "This is your NEW ACCOUNT REGISTER BALANCE:";
+	cout << setw(31) << right << "$" << accountRegisterBalance;
+	SetTextColor(hConsole);
+	WaitForUser(hConsole);
+	cProgram.Push(Step5);
+	cProgram.Peek();
+}
+
+void Step3()
+{
+	ClearScreen(hConsole);
+	cout << "1) Account Register/Checkbook Balance:";
+	cout << setw(35) << right << "$" << initBalance << endl;
+	cout << "2) Other service charges or deductions:";
+	cout << setw(34) << right << "$" << otherDeductionsTotal << endl;
+	cout << '\n';
+
+	cout << "3) List credits not previoulsy recorded that are listed on this statement \n   such as interest \n   (AS A COMMA SEPARATED LIST WITH NO SPACES): $";
+	vector<float> otherCredits = GetInputArray(5, hConsole);
+	ClearScreen(hConsole, consoleWindowX, 1);
+	otherCreditsTotal = VectorAdd(otherCredits);
+	cProgram.Push(Step4);
+	cProgram.Peek();
+}
+
+void Step2()
+{
+	ClearScreen(hConsole);
+	cout << "1) Account Register/Checkbook Balance:";
+
+	//35 is ideal setting on line width, size of text before must be taken into account though to properly space values
+	cout << setw(35) << right << "$" << initBalance << endl;
+	cout << '\n';
+
+	cout << "2) Enter any other other service charges or other deductions not previously \n   recorded that are listed on this statement \n   (AS A COMMA SEPARATED LIST WITH NO SPACES): $";
+	vector<float> otherDeductions = GetInputArray(4, hConsole);
+	ClearScreen(hConsole, consoleWindowX, 0);
+	otherDeductionsTotal = VectorAdd(otherDeductions);
+
+	cProgram.Push(Step3);
+	cProgram.Peek();
+}
+
+void Step1()
+{
+	ClearScreen(hConsole);
+	cout << "FIRST, start with your Account Register/Checkbook:" << "\n\n";
+	cout << "1) List your Account Register/Checkbook Balance here: $";
+	initBalance = GetInput(55, 2, hConsole);
+	cProgram.Push(Step2);
+	cProgram.Peek();
 }
 
 int main()
 {
 	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	
-	//initialize the stack with inital length of 9 as program will go through until completion at least once, minimizing the calls to the resize operation
-	FunctionPointerStack cProgram(9);
+
+	//intro screen
+	SetTextColor(hConsole, WHITE);
+	cout << "\t\tWelcome to the Account Balancing Program, for use \n\t\t\twith your Bank of America account!" << "\n\n\n\n";
+	SetTextColor(hConsole, YELLOW);
+	cout << "**At any time if you need to go back to a step to change the value enter \"/b\"\n  into the input field!" << "\n\n\n\n\n";
+	SetTextColor(hConsole);
+	cout << "\t\t   Program created by Benjamin Moreno C 2016";
+	WaitForUser(hConsole,12);
 
 	//simple exception handling for operations that will crash program
 	try
 	{
+		//start the program by pushing and executing first function, from there each function has the push and peek calls for the next function
 		cProgram.Push(Step1);
-		cProgram.Peek();
-		cProgram.Push(Step2);
-		cProgram.Peek();
-		cProgram.Push(Step3);
-		cProgram.Peek();
-		cProgram.Push(Step4);
-		cProgram.Peek();
-		cProgram.Push(Step5);
-		cProgram.Peek();
-		cProgram.Push(Step6);
-		cProgram.Peek();
-		cProgram.Push(Step7);
-		cProgram.Peek();
-		cProgram.Push(Step8);
-		cProgram.Peek();
-		cProgram.Push(Step9);
 		cProgram.Peek();
 	}
 	catch (char* e)
 	{
 		cerr << "EXCEPTION CAUGHT: " << e << endl;
 	}
-
-	cin.clear();
-	cin.ignore('\n');
-	cin.get();
-
     return 0;
 }
 

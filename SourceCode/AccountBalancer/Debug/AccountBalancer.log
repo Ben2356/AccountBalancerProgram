@@ -1,14 +1,13 @@
 ﻿  AccountBalancer.cpp
-h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(22): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
-h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(23): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
-h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(56): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
-h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(185): warning C4018: '<': signed/unsigned mismatch
-h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(214): warning C4018: '<': signed/unsigned mismatch
-h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(250): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(151): warning C4101: 'firstChar': unreferenced local variable
-h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(368): warning C4018: '<': signed/unsigned mismatch
-h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(276): warning C4018: '<': signed/unsigned mismatch
-  h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(422): note: see reference to function template instantiation 'float VectorAdd<float>(std::vector<float,std::allocator<_Ty>>)' being compiled
+h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(30): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(31): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(64): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(263): warning C4018: '<': signed/unsigned mismatch
+h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(292): warning C4018: '<': signed/unsigned mismatch
+h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(328): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(499): warning C4018: '<': signed/unsigned mismatch
+h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(358): warning C4018: '<': signed/unsigned mismatch
+  h:\data\documents\github\accountbalancerprogram\sourcecode\accountbalancer\accountbalancer.cpp(668): note: see reference to function template instantiation 'float VectorAdd<float>(std::vector<float,std::allocator<_Ty>>)' being compiled
           with
           [
               _Ty=float
