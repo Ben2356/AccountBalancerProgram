@@ -86,10 +86,10 @@ void FunctionPointerStack::Pop()
 }
 
 //calls the function at the top of the stack
-void FunctionPointerStack::Peek()
+void FunctionPointerStack::Peek(HANDLE &hConsole, FunctionPointerStack &cProgram)
 {
 	//if there is nothing on the stack then throw an exception
-	return m_currentLength == 0 ? throw "EXCEPTION - PEEK OPERATION ON EMPTY STACK" : (*m_fptrArray[m_currentLength])();
+	return m_currentLength == 0 ? throw "EXCEPTION - PEEK OPERATION ON EMPTY STACK" : (*m_fptrArray[m_currentLength])(hConsole, cProgram);
 }
 
 //DEBUG OPERATIONS
