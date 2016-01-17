@@ -1,5 +1,5 @@
 //AUTHOR: BENJAMIN MORENO 
-//LAST UPDATED: 1/11/16
+//LAST UPDATED: 1/17/16
 
 /*TODO:
 * 
@@ -471,7 +471,7 @@ float VectorAdd(vector<FormEntry> vData)
 //function that determines if two floating point values are equal
 inline bool isEqual(float x, float y)
 {
-	return std::abs(x - y) <= EPSILON ? true : false;
+	return std::abs(x - y) <= EPSILON;
 }
 
 //when user types /b the program will go back to the previous step
@@ -526,12 +526,12 @@ void Step9(HANDLE &hConsole, FunctionPointerStack &cProgram)
 	cout << '\n';
 	cout << "---------------------------------------------------" << endl;
 	cout << '\n';
-	cout << "6) Outstanding checks, ATM, Check Card, other electronic withdrawls:    $" << formDataSum << endl;
+	cout << "6) Outstanding checks, ATM, Check Card, electronic withdrawls:      $" << formDataSum << endl;
 	cout << "\n\n";
 
 	float finalTotal = subtotal - formDataSum;
 	SetTextColor(hConsole, WHITE);
-	cout << "7) After your TOTAL outstanding checks, ATM, Check Card, and other \n electronic withdrawls were subtracted from SUBTOTAL, your balance is: \t$" << finalTotal;
+	cout << "7) After your TOTAL outstanding checks, ATM, Check Card, and other \n electronic withdrawls were subtracted from SUBTOTAL: \t\t    $" << finalTotal;
 	SetTextColor(hConsole);
 	cout << "\n\n\n";
 
@@ -742,7 +742,7 @@ int main()
 	SetTextColor(hConsole, YELLOW);
 	cout << "**At any time if you need to go back to a step to change the value enter \"/b\"\n  into the input field then press enter!" << "\n\n\n\n\n";
 	SetTextColor(hConsole);
-	cout << "\t\t   Program created by Benjamin Moreno C 2016";
+	cout << "\t    Program created by Benjamin Moreno C 2016 VERSION: 0.6";
 
 	//simple exception handling for operations that will crash program
 	try
