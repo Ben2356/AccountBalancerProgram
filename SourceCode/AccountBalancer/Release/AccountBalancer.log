@@ -1,0 +1,20 @@
+﻿  AccountBalancer.cpp
+AccountBalancer.cpp(21): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+AccountBalancer.cpp(32): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+AccountBalancer.cpp(33): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+AccountBalancer.cpp(252): warning C4018: '<': signed/unsigned mismatch
+AccountBalancer.cpp(281): warning C4018: '<': signed/unsigned mismatch
+AccountBalancer.cpp(317): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+AccountBalancer.cpp(477): warning C4018: '<': signed/unsigned mismatch
+AccountBalancer.cpp(343): warning C4018: '<': signed/unsigned mismatch
+  AccountBalancer.cpp(648): note: see reference to function template instantiation 'float VectorAdd<float>(std::vector<float,std::allocator<_Ty>>)' being compiled
+          with
+          [
+              _Ty=float
+          ]
+  Stack.cpp
+  stdafx.cpp
+  Generating code
+  All 358 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  AccountBalancer.vcxproj -> D:\Users\Ben25\Documents\GitHub\AccountBalancerProgram\SourceCode\Release\AccountBalancer.exe
