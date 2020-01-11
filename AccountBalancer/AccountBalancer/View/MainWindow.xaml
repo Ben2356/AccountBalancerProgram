@@ -1,0 +1,27 @@
+﻿<Window x:Class="AccountBalancer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AccountBalancer"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        x:Name="mainWindowView"
+        Title="Account Balancer" Height="550" Width="800">
+    <Behaviors:Interaction.Triggers>
+        <Behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=mainWindowView}">
+            <Behaviors:InvokeCommandAction Command="{Binding OnMouseDown}" CommandParameter="{Binding ElementName=mainGrid}" />
+        </Behaviors:EventTrigger>
+    </Behaviors:Interaction.Triggers>
+
+    <Grid Focusable="True" x:Name="mainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <local:StepProgressBar ItemsSource="{Binding Steps}" CurrentStepIndex="{Binding CurrentPageIndex}" />
+        <ContentControl Grid.Row="1" Content="{Binding CurrentPageViewModel}" />
+    </Grid>
+    
+</Window>
