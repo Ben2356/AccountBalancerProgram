@@ -11,6 +11,7 @@
     <UserControl.Resources>
         <converters:StatusImageSourceConverter x:Key="statusImageSourceConverter" />
         <converters:StatusTextBlockConverter x:Key="statusTextBlockConverter" />
+        <converters:SuccessImageConverter x:Key="successImageConverter" />
     </UserControl.Resources>
     
     <Grid>
@@ -57,7 +58,17 @@
                 </TextBlock.Style>
             </TextBlock>
         </StackPanel>
-        <TextBlock Grid.Row="5" Grid.ColumnSpan="3" Margin="50 10" Text="{Binding AccountModel.NewAccountRegisterBalance, StringFormat=Account Register Balance: {0:C}}" FontSize="16" />
+        <StackPanel Grid.Row="5" Grid.ColumnSpan="3" Margin="50 10" Orientation="Horizontal">
+            <TextBlock Text="{Binding AccountModel.NewAccountRegisterBalance, StringFormat=Account Register Balance: {0:C}}" FontSize="16" />
+            <Image Margin="50 0 0 0" Height="200" Width="200">
+                <Image.Source>
+                    <MultiBinding Converter="{StaticResource successImageConverter}">
+                        <Binding Path="AccountModel.Total" />
+                        <Binding Path="AccountModel.NewAccountRegisterBalance" />
+                    </MultiBinding>
+                </Image.Source>
+            </Image>
+        </StackPanel>
         <Button Grid.Row="7" Grid.Column="0" Content="Back" Margin="60 0 0 60" Padding="5" Command="{Binding GoToPreviousPage}" />
         <Button Grid.Row="7" Grid.Column="2" Content="Done" Margin="0 0 60 60" Padding="5" Command="{Binding Done}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
     </Grid>
