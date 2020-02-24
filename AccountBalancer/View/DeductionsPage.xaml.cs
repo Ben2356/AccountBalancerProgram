@@ -1,26 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 
 namespace AccountBalancer
 {
     /// <summary>
-    /// Interaction logic for UserControl3.xaml
+    /// Interaction logic for DeductionsPage.xaml
     /// </summary>
-    public partial class UserControl3 : UserControl
+    public partial class DeductionsPage : UserControl
     {
-        public UserControl3()
+        public DeductionsPage()
         {
             InitializeComponent();
         }

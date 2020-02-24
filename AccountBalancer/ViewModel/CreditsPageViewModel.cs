@@ -1,13 +1,7 @@
-﻿using AccountBalancer.model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using AccountBalancer.Model;
 using System.Windows.Input;
 
-namespace AccountBalancer
+namespace AccountBalancer.ViewModel
 {
     public class CreditsPageViewModel : BaseViewModel, IPageViewModel
     {
@@ -41,10 +35,10 @@ namespace AccountBalancer
             set;
         }
 
-        public CreditsPageViewModel(AccountModel accountModel)
+        public CreditsPageViewModel(AccountModel accountModel, Mediator mediator)
         {
-            GoToNextPage = new RelayCommand<object>(x => Mediator.Notify("OnGoToNextPage", ""));
-            GoToPreviousPage = new RelayCommand<object>(x => Mediator.Notify("OnGoToPreviousPage", ""));
+            GoToNextPage = new RelayCommand<object>(arg => mediator.Invoke("OnGoToNextPage"));
+            GoToPreviousPage = new RelayCommand<object>(arg => mediator.Invoke("OnGoToPreviousPage"));
             OnRemoveCredit = new RemoveItemCommand(accountModel.RemoveCredit);
             OnAddCredit = new AddItemCommand(accountModel.AddCredit);
             AccountModel = accountModel;

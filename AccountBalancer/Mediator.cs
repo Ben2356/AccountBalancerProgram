@@ -1,56 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AccountBalancer
 {
-    public static class Mediator
+    /// <summary>
+    /// Mediator class to handle the interactions between ViewModels
+    /// </summary>
+    public class Mediator
     {
-        private static IDictionary<string, List<Action<object>>> actionMappings = new Dictionary<string, List<Action<object>>>();
+        private readonly IDictionary<string, Action<object>> actionMappings = new Dictionary<string, Action<object>>();
 
-        public static void Subscribe(string token, Action<object> callback)
+        /// <summary>
+        /// Adds an function with a token identifier. If the identifier already has an associated function then the old function will be replaced by the new one
+        /// </summary>
+        /// <param name="token">The function identifier</param>
+        /// <param name="action">The function</param>
+        /// <exception cref="ArgumentNullException">if the token or callback is null</exception>
+        public void Add(string token, Action<object> action)
         {
-            if(!actionMappings.ContainsKey(token))
+            if (token == null)
             {
-                var list = new List<Action<object>> { callback };
-                actionMappings.Add(token, list);
+                throw new ArgumentNullException("token");
+            }
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+            if (!actionMappings.ContainsKey(token))
+            {
+                actionMappings.Add(token, action);
             }
             else
             {
-                bool found = false;
-                foreach(var item in actionMappings[token])
-                {
-                    if(item.Method.ToString() == callback.Method.ToString())
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if(!found)
-                {
-                    actionMappings[token].Add(callback);
-                }
+                actionMappings.Remove(token);
+                actionMappings.Add(token, action);
             }
         }
 
-        public static void Unsubscribe(string token, Action<object> callback)
+        /// <summary>
+        /// Calls the function mapped to the identifier token with an optional argument
+        /// </summary>
+        /// <param name="token">The function identifier</param>
+        /// <param name="args">Optional argument for the function</param>
+        /// <exception cref="ArgumentNullException">if token is null</exception>
+        /// <exception cref="MissingMethodException">if the there is no action for the provided token</exception>
+        public void Invoke(string token, object args=null)
         {
-            if(actionMappings.ContainsKey(token))
+            if (token == null)
             {
-                actionMappings[token].Remove(callback);
+                throw new ArgumentNullException("token");
             }
-        }
-
-        public static void Notify(string token, object args=null)
-        {
-            if(actionMappings.ContainsKey(token))
+            if (actionMappings.ContainsKey(token))
             {
-                foreach(var callback in actionMappings[token])
-                {
-                    callback(args);
-                }
+                actionMappings[token](args);
+            }
+            else
+            {
+                throw new MissingMethodException(token + " does not exist");
             }
         }
     }

@@ -1,12 +1,7 @@
-﻿using AccountBalancer.model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AccountBalancer.Model;
 using System.Windows.Input;
 
-namespace AccountBalancer
+namespace AccountBalancer.ViewModel
 {
     public class WithdrawalsPageViewModel : BaseViewModel, IPageViewModel
     {
@@ -40,10 +35,10 @@ namespace AccountBalancer
             set;
         }
 
-        public WithdrawalsPageViewModel(AccountModel accountModel)
+        public WithdrawalsPageViewModel(AccountModel accountModel, Mediator mediator)
         {
-            GoToNextPage = new RelayCommand<object>(x => Mediator.Notify("OnGoToNextPage", ""));
-            GoToPreviousPage = new RelayCommand<object>(x => Mediator.Notify("OnGoToPreviousPage", ""));
+            GoToNextPage = new RelayCommand<object>(arg => mediator.Invoke("OnGoToNextPage"));
+            GoToPreviousPage = new RelayCommand<object>(arg => mediator.Invoke("OnGoToPreviousPage"));
             OnRemoveWithdrawal = new RemoveItemCommand(accountModel.RemoveWithdrawal);
             OnAddWithdrawal = new AddItemCommand(accountModel.AddWithdrawal);
             AccountModel = accountModel;

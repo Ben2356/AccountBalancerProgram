@@ -1,14 +1,7 @@
-﻿using AccountBalancer.model;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using AccountBalancer.Model;
 using System.Windows.Input;
 
-namespace AccountBalancer
+namespace AccountBalancer.ViewModel
 {
     public class DeductionsPageViewModel : BaseViewModel, IPageViewModel
     {
@@ -42,10 +35,10 @@ namespace AccountBalancer
             set;
         }
 
-        public DeductionsPageViewModel(AccountModel accountModel)
+        public DeductionsPageViewModel(AccountModel accountModel, Mediator mediator)
         {
-            GoToNextPage = new RelayCommand<object>(x => Mediator.Notify("OnGoToNextPage", ""));
-            GoToPreviousPage = new RelayCommand<object>(x => Mediator.Notify("OnGoToPreviousPage", ""));
+            GoToNextPage = new RelayCommand<object>(arg => mediator.Invoke("OnGoToNextPage"));
+            GoToPreviousPage = new RelayCommand<object>(arg => mediator.Invoke("OnGoToPreviousPage"));
             OnRemoveDeduction = new RemoveItemCommand(accountModel.RemoveDeduction);
             OnAddDeduction = new AddItemCommand(accountModel.AddDeduction);
             AccountModel = accountModel;
