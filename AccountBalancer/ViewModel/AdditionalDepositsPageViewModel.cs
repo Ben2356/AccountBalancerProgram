@@ -1,13 +1,7 @@
-﻿using AccountBalancer.model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using AccountBalancer.Model;
 using System.Windows.Input;
 
-namespace AccountBalancer
+namespace AccountBalancer.ViewModel
 {
     public class AdditionalDepositsPageViewModel : BaseViewModel, IPageViewModel
     {
@@ -41,10 +35,10 @@ namespace AccountBalancer
             set;
         }
 
-        public AdditionalDepositsPageViewModel(AccountModel accountModel)
+        public AdditionalDepositsPageViewModel(AccountModel accountModel, Mediator mediator)
         {
-            GoToNextPage = new RelayCommand<object>(x => Mediator.Notify("OnGoToNextPage", ""));
-            GoToPreviousPage = new RelayCommand<object>(x => Mediator.Notify("OnGoToPreviousPage", ""));
+            GoToNextPage = new RelayCommand<object>(arg => mediator.Invoke("OnGoToNextPage"));
+            GoToPreviousPage = new RelayCommand<object>(arg => mediator.Invoke("OnGoToPreviousPage"));
             OnRemoveDeposit = new RemoveItemCommand(accountModel.RemoveDeposit);
             OnAddDeposit = new AddItemCommand(accountModel.AddDeposit);
             AccountModel = accountModel;

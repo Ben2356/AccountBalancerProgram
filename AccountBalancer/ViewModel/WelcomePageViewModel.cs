@@ -1,29 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
-namespace AccountBalancer
+namespace AccountBalancer.ViewModel
 {
     public class WelcomePageViewModel : BaseViewModel, IPageViewModel
     {
-        private ICommand goToNextPage;
-
         public ICommand GoToNextPage
         {
-            get
-            {
-                if(goToNextPage == null)
-                {
-                    return new RelayCommand<object>(x => Mediator.Notify("OnGoToNextPage", ""));
-                }
-                else
-                {
-                    return goToNextPage;
-                }
-            }
+            get;
+            set;
+        }
+
+        public WelcomePageViewModel(Mediator mediator)
+        {
+            GoToNextPage = new RelayCommand<object>(arg => mediator.Invoke("OnGoToNextPage"));
         }
     }
 }

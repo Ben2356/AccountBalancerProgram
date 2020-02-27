@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="AccountBalancer.UserControl5"
+﻿<UserControl x:Class="AccountBalancer.NewAccountRegisterBalancePage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 

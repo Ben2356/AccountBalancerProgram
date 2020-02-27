@@ -1,7 +1,7 @@
 # Bank Account Balancing Program
 
 Developed by: Benjamin Moreno 
-Last Updated: 1/11/2020
+Last Updated: 2/26/2020
 
 ## WPF Application
 The old Account Balancer has been rewritten as a WPF desktop application that runs on Windows.

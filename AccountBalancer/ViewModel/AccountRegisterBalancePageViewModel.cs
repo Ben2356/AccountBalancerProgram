@@ -1,12 +1,7 @@
-﻿using AccountBalancer.model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AccountBalancer.Model;
 using System.Windows.Input;
 
-namespace AccountBalancer
+namespace AccountBalancer.ViewModel
 {
     public class AccountRegisterBalancePageViewModel : BaseViewModel, IPageViewModel
     {
@@ -22,9 +17,9 @@ namespace AccountBalancer
             set;
         }
 
-        public AccountRegisterBalancePageViewModel(AccountModel accountModel)
+        public AccountRegisterBalancePageViewModel(AccountModel accountModel, Mediator mediator)
         {
-            GoToNextPage = new RelayCommand<object>(x => Mediator.Notify("OnGoToNextPage", ""));
+            GoToNextPage = new RelayCommand<object>(arg => mediator.Invoke("OnGoToNextPage"));
             AccountModel = accountModel;
         }
     }

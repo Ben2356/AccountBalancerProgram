@@ -1,13 +1,8 @@
-﻿using AccountBalancer.model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using AccountBalancer.Commands;
+using AccountBalancer.Model;
 using System.Windows.Input;
 
-namespace AccountBalancer
+namespace AccountBalancer.ViewModel
 {
     public class SummaryPageViewModel : BaseViewModel, IPageViewModel
     {
@@ -29,27 +24,11 @@ namespace AccountBalancer
             set;
         }
 
-        public SummaryPageViewModel(AccountModel accountModel)
+        public SummaryPageViewModel(AccountModel accountModel, Mediator mediator)
         {
             Done = new CloseWindowCommand();
-            GoToPreviousPage = new RelayCommand<object>(x => Mediator.Notify("OnGoToPreviousPage", ""));
+            GoToPreviousPage = new RelayCommand<object>(arg => mediator.Invoke("OnGoToPreviousPage"));
             AccountModel = accountModel;
-        }
-
-        internal class CloseWindowCommand : ICommand
-        {
-            public event EventHandler CanExecuteChanged;
-
-            public bool CanExecute(object parameter)
-            {
-                return true;
-            }
-
-            public void Execute(object parameter)
-            {
-                Window window = parameter as Window;
-                window.Close();
-            }
         }
     }
 }

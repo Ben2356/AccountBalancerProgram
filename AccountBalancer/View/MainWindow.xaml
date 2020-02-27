@@ -3,8 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AccountBalancer"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:controls="clr-namespace:AccountBalancer.Controls"
         xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         x:Name="mainWindowView"
@@ -20,7 +19,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <local:StepProgressBar ItemsSource="{Binding Steps}" CurrentStepIndex="{Binding CurrentPageIndex}" />
+        <controls:StepProgressBar ItemsSource="{Binding Steps}" CurrentStepIndex="{Binding CurrentPageIndex}" />
         <ContentControl Grid.Row="1" Content="{Binding CurrentPageViewModel}" />
     </Grid>
     

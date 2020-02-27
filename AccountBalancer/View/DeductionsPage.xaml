@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="AccountBalancer.UserControl3"
+﻿<UserControl x:Class="AccountBalancer.DeductionsPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:local="clr-namespace:AccountBalancer"
+             xmlns:controls="clr-namespace:AccountBalancer.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -19,7 +19,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="List any service charges or other deductions not previously recorded that are listed on this statement (if not applicable click next):" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="700" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="18" />
-        <local:PriceAggregatorControl Grid.Row="1" Grid.ColumnSpan="3" CollectionSource="{Binding AccountModel.Deductions}" TotalPrice="{Binding AccountModel.TotalDeductions}" RemoveItemCommand="{Binding OnRemoveDeduction}" AddItemCommand="{Binding OnAddDeduction}" />
+        <controls:PriceAggregatorControl Grid.Row="1" Grid.ColumnSpan="3" CollectionSource="{Binding AccountModel.Deductions}" TotalPrice="{Binding AccountModel.TotalDeductions}" RemoveItemCommand="{Binding OnRemoveDeduction}" AddItemCommand="{Binding OnAddDeduction}" />
         <Button Grid.Row="2" Grid.Column="0" Content="Back" Margin="60 0 0 60" Padding="5" Command="{Binding GoToPreviousPage}" />
         <Button Grid.Row="2" Grid.Column="2" Content="Next" Margin="0 0 60 60" Padding="5" Command="{Binding GoToNextPage}" />
     </Grid>
